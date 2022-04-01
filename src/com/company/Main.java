@@ -59,7 +59,7 @@ public class Main {
                             return;
                     }
                 } else {
-                    System.out.println("try 1-5");}
+                    System.out.println("try 1-5 ");}
             } catch (InputMismatchException e) {
                 System.out.println("Enter correct number");
             }

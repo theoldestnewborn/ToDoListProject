@@ -28,7 +28,7 @@ public class Lists {
                 ListsArray[2] == null &
                 ListsArray[3] == null &
                 ListsArray[4] == null) {
-            System.out.println("No ToDo lists found");
+            System.out.println("No To Do lists found");
         }
     }
 
