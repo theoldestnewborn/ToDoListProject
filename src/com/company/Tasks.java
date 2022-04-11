@@ -1,9 +1,19 @@
 package com.company;
 
+import java.util.ArrayList;
+
 public class Tasks {
-    private int taskNumber;
-    private String taskDescription, newTaskDescription;
     private boolean complete;
+    ArrayList<String> taskList = new ArrayList<>();
+
+    public ArrayList<String> createList (String name) {
+        taskList = new ArrayList<>();
+    return taskList;
+    }
+
+    public void getTaskListDescription (ArrayList<String> list, int number) {
+        System.out.println(list);
+    }
 
     private void addTask (int taskNumber, String taskDescription ){
         this.taskNumber = taskNumber;
