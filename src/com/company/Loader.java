@@ -5,28 +5,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Loader {
-    Path path = Path.of("D:\\JAVA\\tasks\\ToDoListProject\\ToDoList.bin");
-    private Lists newList;
+    final Path path = Path.of("ToDoList.bin");
 
-    public boolean ifFileExists () {
-        return Files.exists(Path.of("D:\\JAVA\\tasks\\ToDoListProject\\ToDoList.bin"));
+    public boolean ifFileExists() {
+        return Files.exists(path);
     }
-    public Lists load () {
-        try (FileInputStream fis = new FileInputStream("D:\\JAVA\\tasks\\ToDoListProject\\ToDoList.bin");
-            ObjectInputStream ois = new ObjectInputStream(fis)) {
 
-            Lists list = (Lists) ois.readObject();
-            ois.close();
-            return list;
+    public Path getPath() {
+        return path;
+    }
+
+    public Lists load() {
+        try (FileInputStream fis = new FileInputStream(String.valueOf(path));
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            return (Lists) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void save () throws IOException {
-        FileOutputStream fos = new FileOutputStream(String.valueOf(path));
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(newList);
-        oos.close();
     }
 }

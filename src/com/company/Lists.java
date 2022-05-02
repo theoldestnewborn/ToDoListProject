@@ -2,6 +2,7 @@ package com.company;
 
 import java.io.*;
 import java.util.*;
+
 public class Lists implements Serializable {
     LinkedHashMap<String, ArrayList<Tasks>> toDoList = new LinkedHashMap<>();
 
@@ -52,10 +53,10 @@ public class Lists implements Serializable {
         printActive();
     }
 
-    public boolean isListEmpty (String name) {
+    public boolean isListEmpty(String name) {
         ArrayList<Tasks> tasks = toDoList.get(name);
         return tasks.isEmpty();
-        }
+    }
 
     public void addTask(String name, String info) {
         ArrayList<Tasks> tasks = toDoList.get(name);

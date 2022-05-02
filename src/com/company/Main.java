@@ -1,8 +1,6 @@
 package com.company;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -11,14 +9,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Lists newList = new Lists();
+        Lists newList;
         Loader loader = new Loader();
         if (loader.ifFileExists()) {
-                newList = loader.load();
-                System.out.println("load");
-
-        } else {newList = new Lists();
-            System.out.println("created");}
+            newList = loader.load();
+            System.out.println("loading...");
+        } else {
+            newList = new Lists();
+        }
 
         for (; ; ) {
             System.out.println("\n1. View all ToDo lists " +
@@ -28,7 +26,6 @@ public class Main {
                     "\n5. Quit");
 
             newList.printActive();
-
             Scanner scanner;
             try {
                 scanner = new Scanner(System.in);
@@ -97,8 +94,9 @@ public class Main {
                                         String choice4step2 = scanner.next();
                                         if (choice4step2.equals("0")) {
                                             break;
-                                        } else if (choice4step2.equals("1") || choice4step2.equals("2") || choice4step2.equals("3")
-                                                || choice4step2.equals("4") || choice4step2.equals("5") || choice4step2.equals("6")) {
+                                        } else if (choice4step2.equals("1") || choice4step2.equals("2")
+                                                || choice4step2.equals("3") || choice4step2.equals("4")
+                                                || choice4step2.equals("5") || choice4step2.equals("6")) {
                                             switch (choice4step2) {
                                                 case "1":
                                                     newList.tasksInListInfo(choice4);
@@ -111,7 +109,7 @@ public class Main {
                                                     break;
                                                 case "3":
                                                     if (newList.isListEmpty(choice4)) {
-                                                        System.out.println("The list is empty"); break;
+                                                        System.out.println("The list is empty");
                                                     } else {
                                                         newList.tasksInListInfo(choice4);
                                                         newList.tasksInListInfo(choice4);
@@ -119,11 +117,11 @@ public class Main {
                                                         int taskToDelete = scanner.nextInt();
                                                         newList.deleteTask(choice4, taskToDelete);
                                                         newList.tasksInListInfo(choice4);
-                                                        break;
                                                     }
+                                                    break;
                                                 case "4":
                                                     if (newList.isListEmpty(choice4)) {
-                                                        System.out.println("The list is empty"); break;
+                                                        System.out.println("The list is empty");
                                                     } else {
                                                         newList.tasksInListInfo(choice4);
                                                         System.out.println("Which task you want to edit");
@@ -132,12 +130,11 @@ public class Main {
                                                         String correction = scanner.next(); // nextline?
                                                         newList.editTask(choice4, taskToEdit, correction);
                                                         newList.tasksInListInfo(choice4);
-                                                        break;
                                                     }
+                                                    break;
                                                 case "5":
                                                     if (newList.isListEmpty(choice4)) {
                                                         System.out.println("The list is empty");
-                                                        break;
                                                     } else {
                                                         newList.tasksInListInfo(choice4);
                                                         System.out.println("Which task you want to mark as completed");
@@ -145,13 +142,12 @@ public class Main {
                                                         newList.completedMarker(choice4, completed);
                                                         System.out.println("Task " + newList.getTask(choice4, completed).
                                                                 toString() + " is marked as completed now.");
-                                                        break;
                                                     }
+                                                    break;
 
                                                 case "6":
                                                     if (newList.isListEmpty(choice4)) {
                                                         System.out.println("The list is empty");
-                                                        break;
                                                     } else {
                                                         newList.tasksInListInfo(choice4);
                                                         System.out.println("Which task you want to choose as active " +
@@ -160,8 +156,8 @@ public class Main {
                                                         newList.activeMarker(choice4, active);
                                                         System.out.println("Task " + newList.getTask(choice4, active)
                                                                 + " is active now!");
-                                                        break;
                                                     }
+                                                    break;
                                             }
                                         } else {
                                             System.out.println("Try 1-6");
@@ -174,8 +170,11 @@ public class Main {
                             break;
 
                         case 5:
-                            try {
-                                loader.save();
+
+                            try (FileOutputStream fos = new FileOutputStream(String.valueOf(loader.getPath()));
+                                 BufferedOutputStream bos = new BufferedOutputStream(fos);
+                                 ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+                                oos.writeObject(newList);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }

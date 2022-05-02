@@ -1,14 +1,17 @@
 package com.company;
 
 
-public class Tasks {
+import java.io.Serializable;
+
+public class Tasks implements Serializable {
     private String task;
     private boolean isComplete;
     private boolean isActive;
 
-    public Tasks () {
+    public Tasks() {
     }
-    public Tasks (String task) {
+
+    public Tasks(String task) {
         this.task = task;
         this.isComplete = false;
         this.isActive = false;
