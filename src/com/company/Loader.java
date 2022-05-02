@@ -1,23 +1,32 @@
 package com.company;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Loader {
-    final String name = "ToDoList.bin";
+    Path path = Path.of("D:\\JAVA\\tasks\\ToDoListProject\\ToDoList.bin");
+    private Lists newList;
 
-    public boolean ifExists () {
-        File newFile = new File(name);
-        return newFile.exists();
+    public boolean ifFileExists () {
+        return Files.exists(Path.of("D:\\JAVA\\tasks\\ToDoListProject\\ToDoList.bin"));
     }
-    public Lists load () throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(name);
-        ObjectInputStream oos = new ObjectInputStream(fis);
-        Lists list = (Lists) oos.readObject();
+    public Lists load () {
+        try (FileInputStream fis = new FileInputStream("D:\\JAVA\\tasks\\ToDoListProject\\ToDoList.bin");
+            ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+            Lists list = (Lists) ois.readObject();
+            ois.close();
+            return list;
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void save () throws IOException {
+        FileOutputStream fos = new FileOutputStream(String.valueOf(path));
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(newList);
         oos.close();
-        return list;
     }
-
 }
