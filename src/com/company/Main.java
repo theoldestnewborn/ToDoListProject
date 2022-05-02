@@ -1,101 +1,174 @@
 package com.company;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
 public class Main {
 
-
     public static void main(String[] args) {
-        Lists newList = new Lists();
-        Tasks newTask = new Tasks();
+
+        Loader loader = new Loader();
+        Lists newList = null;
+        if (loader.ifExists()) {
+            try {
+                newList = loader.load();
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Saved file not found, creating new");
+            }
+        } else {
+            System.out.println("Saved file not found, creating new");
+            newList = new Lists();
+        }
+
         for (; ; ) {
-            System.out.println("1. Вывести список листов. " +
-                    "2. Добавить. " +
-                    "3. Удалить лист. " +
-                    "4. Выбрать лист. " +
-                    "5. Выйти из приложения.");
-            Scanner scanner = null;
+            System.out.println("\n1. View all ToDo lists " +
+                    "\n2. Add list " +
+                    "\n3. Delete list " +
+                    "\n4. Choose list " +
+                    "\n5. Quit");
+            newList.printActive();
+            Scanner scanner;
             try {
                 scanner = new Scanner(System.in);
                 int choice0 = scanner.nextInt();
                 if (choice0 == 1 | choice0 == 2 | choice0 == 3 | choice0 == 4 | choice0 == 5) {
                     switch (choice0) {
                         case 1:
-                            try {
-                                newList.listsArrayInfo();
-                            } catch (NullPointerException e) {
-                                System.out.println("No ToDo lists found");
-                            } break;
+                            newList.listsArrayInfo();
+                            break;
 
                         case 2:
                             System.out.println("Enter the list's name, 0 - back");
                             String listName = scanner.next();//как использовать nextLine?
                             if (listName.equals("0")) {
                                 break;
-                            } else {
-                            ArrayList<String> newArrayList = new ArrayList<>();
-                            newList.addList(listName, newArrayList);
-                            System.out.println("Current ToDo lists: ");
-                            newList.listsArrayInfo();
-                            break;
-                            }
-
-                        case 3:
-                            System.out.println("Which list you want to delete? 0 - back");
-                            newList.listsArrayInfo();
-                            String choice3 = scanner.next();
-                            if (choice3.equals("0")) {
+                            } else if (newList.ifListExists(listName)) {
+                                System.out.println("Try another name!");
                                 break;
                             } else {
-                                newList.deleteList(choice3);
+                                ArrayList<Tasks> newArrayList = new ArrayList<>();
+                                newList.addList(listName, newArrayList);
                                 System.out.println("Current ToDo lists: ");
                                 newList.listsArrayInfo();
                                 break;
                             }
 
-                        case 4:
-                            System.out.println("Which list you want to edit?");
-                            newList.listsArrayInfo();
-                            System.out.println("0 - back");
-                            String choice4 = scanner.next();
-                            if (choice4.equals("0")) {
-                                break;
-                            } else {
-                                System.out.println("What would you like to edit in " + "\"" + choice4 +"\""+ ": " +
-                                        "\n1. Get all tasks of the list" +
-                                        "\n2. Add new task." +
-                                        "\n3. Delete task." +
-                                        "\n4. Edit task." +
-                                        "\n5. Mark task as completed." +
-                                        "\n6. Mark task as active." +
-                                        "\n0. Back");
-                                    int choice4step2 = scanner.nextInt();
-                                if (choice4step2 == 1 || choice4step2 == 2 || choice4step2 == 3 ||
-                                    choice4step2 == 4 || choice4step2 == 5 || choice4step2 == 0) {
-                                    switch (choice4step2) {
-                                        case 1:
-
-                                        case 2:
-                                        case 3:
-                                        case 4:
-                                        case 5:
-                                        case 0:
-                                            return;
-                                    }
+                        case 3:
+                            for (; ; ) {
+                                if (newList.isMapEmpty()) {
+                                    System.out.println("No ToDo lists");
                                 } else {
-                                    System.out.println("try 1-5 ");
-                                    return;
+                                    System.out.println("Which list you want to delete? 0 - back");
+                                    newList.listsArrayInfo();
+                                    String choice3 = scanner.next();
+                                    if (choice3.equals("0")) {
+                                        break;
+                                    } else if (!newList.ifListExists(choice3)) {
+                                        System.out.println("Wrong list name");
+                                    } else if (newList.ifListExists(choice3)) {
+                                        newList.deleteList(choice3);
+                                        System.out.println("Current ToDo lists: ");
+                                        newList.listsArrayInfo();
+                                        break;
+                                    }
                                 }
                             }
+                            break;
+
+                        case 4:
+                            for (; ; ) {
+                                System.out.println("Which list you want to edit?");
+                                newList.listsArrayInfo();
+                                System.out.println("0 - back");
+                                String choice4 = scanner.next();
+                                if (choice4.equals("0")) {
+                                    break;
+                                } else if (newList.ifListExists(choice4)) {
+                                    for (; ; ) {
+                                        System.out.println("\nWhat would you like to edit in " + "\"" + choice4 + "\"" + ": " +
+                                                "\n1. View all tasks of the list" +
+                                                "\n2. Add new task." +
+                                                "\n3. Delete task." +
+                                                "\n4. Edit task." +
+                                                "\n5. Mark task as completed." +
+                                                "\n6. Mark task as active." +
+                                                "\n0. Back");
+                                        String choice4step2 = scanner.next();
+                                        if (choice4step2.equals("0")) {
+                                            break;
+                                        } else if (choice4step2.equals("1") || choice4step2.equals("2") || choice4step2.equals("3")
+                                                || choice4step2.equals("4") || choice4step2.equals("5") || choice4step2.equals("6")) {
+                                            switch (choice4step2) {
+                                                case "1":
+                                                    newList.tasksInListInfo(choice4);
+                                                    break;
+                                                case "2":
+                                                    System.out.println("Enter the task");
+                                                    String taskToAdd = scanner.next();
+                                                    newList.addTask(choice4, taskToAdd);
+                                                    newList.tasksInListInfo(choice4);
+                                                    break;
+                                                case "3":
+                                                    newList.tasksInListInfo(choice4);
+                                                    System.out.println("Which task you want to delete? (Number 1-...)");
+                                                    int taskToDelete = scanner.nextInt();
+                                                    newList.deleteTask(choice4, taskToDelete);
+                                                    newList.tasksInListInfo(choice4);
+                                                    break;
+                                                case "4":
+                                                    newList.tasksInListInfo(choice4);
+                                                    System.out.println("Which task you want to edit");
+                                                    int taskToEdit = scanner.nextInt();
+                                                    System.out.println("Type corrected task");
+                                                    String correction = scanner.next(); // nextline?
+                                                    newList.editTask(choice4, taskToEdit, correction);
+                                                    newList.tasksInListInfo(choice4);
+                                                    break;
+                                                case "5":
+                                                    newList.tasksInListInfo(choice4);
+                                                    System.out.println("Which task you want to mark as completed");
+                                                    int completed = scanner.nextInt() - 1;
+                                                    newList.completedMarker(choice4, completed);
+                                                    System.out.println("Task " + newList.getTask(choice4, completed).
+                                                            toString() + " is marked as completed now.");
+                                                    break;
+
+                                                case "6":
+                                                    newList.tasksInListInfo(choice4);
+                                                    System.out.println("Which task you want to choose as active " +
+                                                            "(only 1 task can be active)");
+                                                    int active = scanner.nextInt() - 1;
+                                                    newList.activeMarker(choice4, active);
+                                                    System.out.println("Task " + newList.getTask(choice4,active)
+                                                                        + " is active now!");
+                                                    break;
+                                            }
+                                        } else {
+                                            System.out.println("Try 1-6");
+                                        }
+                                    }
+                                } else {
+                                    System.out.println("Try another name");
+                                }
+                            }
+                            break;
+
                         case 5:
+                            try {
+                                FileOutputStream fos = new FileOutputStream("ToDoList.bin");
+                                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                                oos.writeObject(newList);
+                                oos.close();
+                            } catch (IOException e) {
+                                System.out.println("Cannot save the file");
+                            }
                             System.out.println("Goodbye!");
                             return;
                     }
                 } else {
-                    System.out.println("try 1-5 ");
+                    System.out.println("try 1-5");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Enter correct number");

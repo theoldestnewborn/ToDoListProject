@@ -3,32 +3,44 @@ package com.company;
 import java.util.ArrayList;
 
 public class Tasks {
-    private boolean complete;
-    ArrayList<String> taskList = new ArrayList<>();
+    private String task;
+    private boolean isComplete;
+    private boolean isActive;
 
-    public ArrayList<String> createList (String name) {
-        taskList = new ArrayList<>();
-    return taskList;
+    public Tasks () {
+    }
+    public Tasks (String task) {
+        this.task = task;
+        this.isComplete = false;
+        this.isActive = false;
     }
 
-    public void getTaskListDescription (ArrayList<String> list, int number) {
-        System.out.println(list);
+    public boolean isActive() {
+        return isActive;
     }
 
-    private void addTask (int taskNumber, String taskDescription ){
-        this.taskNumber = taskNumber;
-        this.taskDescription = taskDescription;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
-    private void deleteTask (){
-
+    public String getTask() {
+        return task;
     }
 
-    private void editTask (int taskNumber, String taskDescription){
-        this.taskDescription = newTaskDescription;
+    public void setTask(String task) {
+        this.task = task;
     }
 
-    private void complete () {
+    public boolean isComplete() {
+        return isComplete;
+    }
 
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
+
+    @Override
+    public String toString() {
+        return task;
     }
 }
