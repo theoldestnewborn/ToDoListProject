@@ -30,6 +30,8 @@ public class Main {
             try {
                 scanner = new Scanner(System.in);
                 int choice0 = scanner.nextInt();
+                // todo логику в case вынеси в методы в отдельные, потом посмотрю
+                // todo удали if и добавь блок default к swithc ... case
                 if (choice0 == 1 | choice0 == 2 | choice0 == 3 | choice0 == 4 | choice0 == 5) {
                     switch (choice0) {
                         case 1:

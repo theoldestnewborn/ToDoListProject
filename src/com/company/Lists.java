@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class Lists implements Serializable {
+    // todo Используй интерфейс Map
     LinkedHashMap<String, ArrayList<Tasks>> toDoList = new LinkedHashMap<>();
 
     public Lists() {
@@ -43,6 +44,8 @@ public class Lists implements Serializable {
         } else {
             System.out.println("Current tasks in " + name + " - ");
             for (Tasks task : tasks) {
+                // todo замени эту реализацию на метод в таск. Необязательно, но будет
+                //  смотреться выигрышнее
                 if (task.isComplete()) {
                     System.out.println((tasks.indexOf(task) + 1) + ". " + task + " ✓");
                 } else {
@@ -83,6 +86,7 @@ public class Lists implements Serializable {
         return tasks.get(number);
     }
 
+    // todo см. телегу)
     public void activeMarker(String name, int number) {
         Set<Map.Entry<String, ArrayList<Tasks>>> set = toDoList.entrySet();
         Iterator<Map.Entry<String, ArrayList<Tasks>>> i = set.iterator();
